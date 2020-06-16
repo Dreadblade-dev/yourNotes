@@ -1,5 +1,18 @@
 package com.dreadblade.entity;
 
+/**
+ * This entity describes notes table
+ *
+ *
+ * SQL:
+ * CREATE TABLE notes(
+ * id SERIAL,
+ * owner_id int NOT NULL,
+ * title VARCHAR(128) NOT NULL,
+ * content VARCHAR(2048) NOT NULL
+ * );
+ */
+
 public class Note extends BaseDaoEntity {
     private int id;
     private int ownerID;

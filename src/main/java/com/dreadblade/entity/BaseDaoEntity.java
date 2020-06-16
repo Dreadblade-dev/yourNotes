@@ -1,9 +1,10 @@
 package com.dreadblade.entity;
 
 /**
- * Базовая entity для DAO.
- * Каждая entity описывает одну и только одну таблицу.
- * Entity наследуются от этого абстрактного класса
+ * Base DAO entity.
+ * Every entity describes one table
+ * Entity must contain getters and setters
+ * Entities extends this class
  */
 abstract public class BaseDaoEntity {
     @Override
