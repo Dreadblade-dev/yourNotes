@@ -340,7 +340,8 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
     @Override
     public User updateById(int id, String user_name, String first_name, String last_name, String email, String password) throws DaoException {
         log.info("Updating user with id \"" + id + "\".");
-        String sqlUpdateUserById = "UPDATE users SET user_name = ?, first_name = ?, last_name = ?, email = ?, password = ? WHERE id = ?;";
+        String sqlUpdateUserById = "UPDATE users SET user_name = ?, first_name = ?, last_name = ?, email = ?," +
+                " password = ? WHERE id = ? RETURNING *;";
 
         User user = null;
         Connection connection = null;
@@ -358,9 +359,10 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setString(4, email);
                 statement.setString(5, password);
                 statement.setInt(6, id);
+                statement.execute();
                 try {
                     log.trace("Getting result set");
-                    resultSet = statement.getGeneratedKeys();
+                    resultSet = statement.getResultSet();
                     if (resultSet.next()) {
                         log.trace("Creating user to return");
                         user = new User(resultSet.getString("user_name"),
@@ -369,7 +371,6 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                         user.setId(resultSet.getInt("id"));
                         log.info("User with id \"" + id + "\" was successfully updated!");
                     }
-
                 } finally {
                     try {
                         if (resultSet != null)
@@ -424,6 +425,7 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setString(3, email);
                 statement.setString(4, password);
                 statement.setString(5, user_name);
+                statement.execute();
                 try {
                     log.trace("Getting result set");
                     resultSet = statement.getGeneratedKeys();
@@ -490,6 +492,7 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setString(3, last_name);
                 statement.setString(4, password);
                 statement.setString(5, email);
+                statement.execute();
                 try {
                     log.trace("Getting result set");
                     resultSet = statement.getGeneratedKeys();
@@ -552,7 +555,7 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setInt(1, id);
                 try {
                     if (statement.executeUpdate() == 1)
-                        log.info("User with id \"" + id + "\" was successfully deleted!");
+                        log.info("User with id \"" + id + "\" have been successfully deleted!");
                 } finally {
                     try {
                         statement.close();
@@ -595,7 +598,7 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setString(1, user_name);
                 try {
                     if (statement.executeUpdate() == 1)
-                        log.info("User with username \"" + user_name + "\" was successfully deleted!");
+                        log.info("User with username \"" + user_name + "\" have been successfully deleted!");
                 } finally {
                     try {
                         statement.close();
@@ -638,7 +641,7 @@ public class JdbcUserDao extends BaseDao<User> implements UserDao {
                 statement.setString(1, email);
                 try {
                     if (statement.executeUpdate() == 1)
-                        log.info("User with email \"" + email + "\" was successfully deleted!");
+                        log.info("User with email \"" + email + "\" have been successfully deleted!");
                 } finally {
                     try {
                         statement.close();

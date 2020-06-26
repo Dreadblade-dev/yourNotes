@@ -50,7 +50,7 @@ public class JdbcNoteDao extends BaseDao<Note> implements NoteDao {
                     log.trace("Creating note to return");
                     note = new Note(resultSet.getString("title"), resultSet.getString("content"));
                     note.setOwnerID(owner.getId());
-                    log.info("Note with title \"" + title + "\" and owner \"" + owner.getUsername() + "\" was created!");
+                    log.info("Note with title \"" + title + "\" and owner \"" + owner.getUsername() + "\" created!");
                 } finally {
                     try {
                         if (resultSet != null)
@@ -211,6 +211,69 @@ public class JdbcNoteDao extends BaseDao<Note> implements NoteDao {
     }
 
     @Override
+    public Note updateById(int id, String title, String content) {
+        log.info("Updating note with id \"" + id + "\".");
+        String sqlUpdateUserById = "UPDATE notes SET title = ?, content = ? WHERE id = ? RETURNING *;";
+
+        Note note = null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            log.trace("Opening connection");
+            connection = daoFactory.getConnection();
+            try {
+                log.trace("Creating prepared statement");
+                statement = connection.prepareStatement(sqlUpdateUserById);
+                statement.setString(1, title);
+                statement.setString(2, content);
+                statement.setInt(3, id);
+                statement.execute();
+                try {
+                    log.trace("Getting result set");
+                    resultSet = statement.getResultSet();
+                    if (resultSet.next()) {
+                        log.trace("Creating note to return");
+                        note = new Note(resultSet.getString("title"), resultSet.getString("content"));
+                        note.setId(resultSet.getInt("id"));
+                        note.setOwnerID(resultSet.getInt("owner_id"));
+                        log.info("Note with id \"" + id + "\" was successfully updated!");
+                    }
+                } finally {
+                    try {
+                        if (resultSet != null)
+                            resultSet.close();
+                        log.trace("Result set closed");
+                    } catch (SQLException e) {
+                        log.error("Cannot close result set", e);
+                    }
+                }
+            } finally {
+                try {
+                    if (statement != null)
+                        statement.close();
+                    log.trace("Statement closed");
+                } catch (SQLException e) {
+                    log.error("Cannot close statement", e);
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Cannot update note", e);
+            throw new DaoException("Cannot update note", e);
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+                log.trace("Connection closed");
+            } catch (SQLException e) {
+                log.error("Cannot close connection", e);
+            }
+        }
+        log.trace("Returning updated note with id \"" + id + "\".");
+        return note;
+    }
+
+    @Override
     public void deleteById(int id) throws DaoException {
         log.info("Deleting note with id \"" + id + "\".");
         String sqlDeleteUserById = "DELETE FROM notes WHERE id = ?;";
@@ -226,7 +289,7 @@ public class JdbcNoteDao extends BaseDao<Note> implements NoteDao {
                 statement.setInt(1, id);
                 try {
                     if (statement.executeUpdate() == 1)
-                        log.info("Note with id \"" + id + "\" was successfully deleted!");
+                        log.info("Note with id \"" + id + "\" has been successfully deleted!");
                 } finally {
                     try {
                         statement.close();
@@ -238,6 +301,49 @@ public class JdbcNoteDao extends BaseDao<Note> implements NoteDao {
             } catch (SQLException e) {
                 log.error("Cannot delete note", e);
                 throw new DaoException("Cannot delete note", e);
+            }
+        } catch (SQLException e) {
+            log.error("Cannot open connection");
+            throw new DaoException("Cannot open connection", e);
+        } finally {
+            try {
+                if (connection != null)
+                    connection.close();
+                log.trace("Connection closed");
+            } catch (SQLException e) {
+                log.error("Cannot close connection", e);
+            }
+        }
+    }
+
+    @Override
+    public void deleteAllByUser(User user) {
+        log.info("Deleting all user notes with id \"" + user.getId() + "\".");
+        String sqlDeleteAllUserNotesById = "DELETE FROM notes WHERE owner_id = ?;";
+
+        Connection connection = null;
+        PreparedStatement statement = null;
+        try {
+            log.trace("Opening connection");
+            connection = daoFactory.getConnection();
+            try {
+                log.trace("Creating prepared statement");
+                statement = connection.prepareStatement(sqlDeleteAllUserNotesById);
+                statement.setInt(1, user.getId());
+                try {
+                    if (statement.executeUpdate() >= 1)
+                        log.info("All user notes with id \"" + user.getId() + "\" have been successfully deleted!");
+                } finally {
+                    try {
+                        statement.close();
+                        log.trace("Statement closed");
+                    } catch (SQLException e) {
+                        log.error("Cannot close statement", e);
+                    }
+                }
+            } catch (SQLException e) {
+                log.error("Cannot delete notes", e);
+                throw new DaoException("Cannot delete notes", e);
             }
         } catch (SQLException e) {
             log.error("Cannot open connection");

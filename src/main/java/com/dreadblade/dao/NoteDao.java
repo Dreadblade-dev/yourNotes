@@ -14,4 +14,6 @@ import java.util.List;
 public interface NoteDao extends IDao<Note> {
     Note create(User owner, String title, String content);
     List<Note> findAllByUser(User user);
+    Note updateById(int id, String title, String content);
+    void deleteAllByUser(User user);
 }
