@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Servlet loads users notes and forwards them to main menu page
@@ -40,7 +41,7 @@ public class MainMenuPageServlet extends HttpServlet {
 
     private void setNoteListToAttribute(HttpServletRequest req) {
         User user = (User) req.getSession().getAttribute("current_user");
-        List<Note> notes = dao.findAllByUser(user);
+        CopyOnWriteArrayList<Note> notes = (CopyOnWriteArrayList<Note>) dao.findAllByUser(user);
         req.getSession().setAttribute("current_user_notes", notes);
     }
 }
