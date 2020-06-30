@@ -42,7 +42,7 @@
                         </div>
                         <div class="form-group">
                             <label for="add-note-content" class="col-form-label">Content:</label>
-                            <textarea id="add-note-content" class="form-control" name="content" required></textarea>
+                            <textarea id="add-note-content" rows="10" class="form-control" name="content" required></textarea>
                         </div>
                     </form>
                 </div>
@@ -74,7 +74,7 @@
                         </div>
                         <div class="form-group">
                             <label for="edit-note-content" class="col-form-label">Content:</label>
-                            <textarea id="edit-note-content" class="form-control" name="content" required></textarea>
+                            <textarea id="edit-note-content" rows="10" class="form-control" name="content" required></textarea>
                         </div>
                     </form>
                 </div>
@@ -140,7 +140,7 @@
             }
         %>
         <main role="main" class="container-fluid">
-        <%
+            <%
             User user = (User) session.getAttribute("current_user");
             @SuppressWarnings("unchecked")
             List<Note> notes = (List<Note>) session.getAttribute("current_user_notes");
@@ -149,10 +149,10 @@
                 if (!notes.isEmpty()) {
                     ListIterator iterator = notes.listIterator(notes.size());
                     printNavbar(out);
-                    out.println("<div class=\"row justify-content-center\">");
+                    out.println("<div class=\"row row-cols-1 row-cols-xl-3 justify-content-center\">");
                     while (iterator.hasPrevious()){
                         Note currentNote = (Note) iterator.previous();
-                        out.println("<div class=\"col col-12 col-md-3 mb-3 mx-2 shadow p-3 bg-white rounded-lg text-left\"");
+                        out.println("<div class=\"col col-12 col-xl-3 mb-3 mx-xl-2 shadow p-3 bg-white rounded-lg text-left\"");
                         out.println("<h3><strong>" + currentNote.getTitle() + "</strong></h3>");
                         printDeleteNoteButton(out, currentNote);
                         printEditNoteButton(out, currentNote);
@@ -175,7 +175,7 @@
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
                 integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
                 crossorigin="anonymous"></script>
-        <script src="scripts/bootstrap.min.js"></script>
+        <script src="/scripts/bootstrap.min.js"></script>
         <script src="/scripts/edit-note.js"></script>
     </body>
 </html>

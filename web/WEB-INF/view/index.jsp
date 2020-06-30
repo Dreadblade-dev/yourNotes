@@ -14,7 +14,7 @@
     <meta content="text/html">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css" type="text/css">
-    <link rel="stylesheet" href="stylesheets/index.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/index.css" type="text/css">
   </head>
   <body class="text-center">
     <div class="index-container d-flex w-100 h-100 p-3 mx-auto flex-column">

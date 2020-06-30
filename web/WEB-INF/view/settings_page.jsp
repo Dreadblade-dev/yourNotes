@@ -7,7 +7,6 @@
   Time: 08:47 PM
   To change this template use File | Settings | File Templates.
 --%>
-
 <!DOCTYPE html>
 <html lang="en-US">
     <head>
@@ -19,46 +18,35 @@
         <link rel="stylesheet" href="/stylesheets/settings.css" type="text/css">
     </head>
     <body class="text-center">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
+            <span class="navbar-brand">yourNotes</span>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse text-left" id="navbarCollapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-white-50" href="/">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link">
+                            Settings<span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class=\"nav-item\">
+                        <form action="/settings?action=sign-out" method="post">
+                            <button value="submit" class="btn btn-link text-white-50">Sign out</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <main role="main" class="container-fluid">
             <h2>Account information:</h2>
-            <%!
-                private void printSignOutButton(JspWriter out) throws IOException {
-                    out.println("<form action=\"/settings?action=sign-out\" method=\"post\">\n" +
-                            "<button value=\"submit\" class=\"btn btn-link text-white-50\">Sign out</button>\n" +
-                            "</form>");
-                }
-
-                private void printSettingsButton(JspWriter out) throws IOException {
-                    out.println("<a class=\"nav-link\">Settings<span class=\"sr-only\">(current)</span></a>");
-                }
-
-                private void printNavbar(JspWriter out) throws IOException {
-                    out.println("<nav class=\"navbar navbar-expand-md navbar-dark fixed-top bg-primary\">");
-                    out.println("<span class=\"navbar-brand\">yourNotes</span>");
-                    out.println("<button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\"" +
-                            " data-target=\"#navbarCollapse\" aria-controls=\"navbarCollapse\"" +
-                            " aria-expanded=\"false\" aria-label=\"Toggle navigation\">\n" +
-                            " <span class=\"navbar-toggler-icon\"></span>\n</button>");
-                    out.println("<div class=\"collapse navbar-collapse text-left\" id=\"navbarCollapse\">");
-                    out.println("<ul class=\"navbar-nav mr-auto\">");
-                    out.println("<li class=\"nav-item\">");
-                    out.println("<a class=\"nav-link text-white-50\" href=\"/\">Home<span class=\"sr-only\">(current)</a>");
-                    out.println("</li>");
-                    out.println("<li class=\"nav-item active\">");
-                    printSettingsButton(out);
-                    out.println("</li>");
-                    out.println("<li class=\"nav-item\">");
-                    printSignOutButton(out);
-                    out.println("</li>");
-                    out.println("</ul>");
-                    out.println("</div>");
-                    out.println("</nav>");
-                }
-            %>
-
             <%
                 User user = (User) session.getAttribute("current_user");
-                printNavbar(out);
+
                 out.println("<ul>");
                 out.println("<li>Username: " + user.getUsername() + "</li>");
                 out.println("<li>First name: " + user.getFirstName() + "</li>");
