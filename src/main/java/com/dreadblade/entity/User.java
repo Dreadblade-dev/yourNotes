@@ -83,4 +83,16 @@ public class User extends BaseDaoEntity {
     public String toString() {
         return "User " + id + "\nLogin: " + username;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 47;
+        hash = hash * 45 + id;
+        hash = hash * 43 + username.hashCode();
+        hash = hash * 41 + firstName.hashCode();
+        hash = hash * 39 + lastName.hashCode();
+        hash = hash * 37 + password.hashCode();
+        hash = hash * 35 + email.hashCode();
+        return Math.abs(hash);
+    }
 }
