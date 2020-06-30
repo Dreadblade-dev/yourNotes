@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.PrintWriter;
-
 
 /**
  * Servlet authenticates users
@@ -30,17 +28,30 @@ public class SignInPageServlet extends HttpServlet {
         DaoFactory daoFactory = DaoFactory.getInstance();
         UserDao dao = daoFactory.getUserDao();
         User user = dao.findByUsername(req.getParameter("user_name"));
+        HttpSession session = req.getSession();
 
-        if (user.getPassword().equals(req.getParameter("password"))) {
-            log.trace("User " + user.getUsername() + " signed in");
-            HttpSession session = req.getSession();
-            session.setAttribute("current_user", user);
-            getServletContext().getRequestDispatcher("/menu").forward(req, resp);
-        }
-        else {
-            log.trace("User " + user.getUsername() + " tried to sign in, wrong password");
-            PrintWriter pw = resp.getWriter();
-            pw.append("Error! Wrong password!");
+        if (user != null) {
+            if (user.getPassword().equals(req.getParameter("password"))) {
+                log.trace("User " + user.getUsername() + " signed in");
+                session.setAttribute("current_user", user);
+                session.removeAttribute("sign_in_failed");
+                session.removeAttribute("invalid_username");
+                session.removeAttribute("invalid_password");
+                getServletContext().getRequestDispatcher("/menu").forward(req, resp);
+            }
+            else {
+                log.trace("User " + user.getUsername() + " tried to sign in, invalid password");
+                session.setAttribute("sign_in_failed", true);
+                session.setAttribute("invalid_username", false);
+                session.setAttribute("invalid_password", true);
+                getServletContext().getRequestDispatcher(SIGN_IN_PAGE_PATH).forward(req, resp);
+            }
+        } else {
+            log.trace("User " + req.getParameter("user_name") + " tried to sign in, invalid username");
+            session.setAttribute("sign_in_failed", true);
+            session.setAttribute("invalid_username", true);
+            session.setAttribute("invalid_password", false);
+            getServletContext().getRequestDispatcher(SIGN_IN_PAGE_PATH).forward(req, resp);
         }
 
     }

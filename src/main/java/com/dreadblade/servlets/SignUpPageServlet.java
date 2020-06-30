@@ -1,5 +1,7 @@
 package com.dreadblade.servlets;
 
+import com.dreadblade.dao.DaoFactory;
+import com.dreadblade.dao.UserDao;
 import com.dreadblade.entity.User;
 
 import com.dreadblade.servlets.email.EmailSender;
@@ -26,25 +28,50 @@ public class SignUpPageServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+
+        DaoFactory daoFactory = DaoFactory.getInstance();
+        UserDao dao = daoFactory.getUserDao();
+
         User user = new User(req.getParameter("user_name"), req.getParameter("first_name"), req.getParameter("last_name"),
                 req.getParameter("email"), req.getParameter("password"));
-        try {
-            String messageContent =
-                    "<div style=\"font-family: -apple-system,BlinkMacSystemFont," +
-                            "'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji'," +
-                            "'Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';\"><p style=\"background-color: #0069d9;" +
-                            "color:#fff; text-align: center;\">yourNotes</p><hr style=\"color:#0069d9;\">" +
-                            "<p>Hello " + user.getFirstName() + "!</p><br>" +
-                            "<p>Your verification code is " + user.hashCode() + "</p><hr style=\"color:#0069d9;\">" +
-                            "<p>Please, do not reply on this message</p></div>";
-            EmailSender.sendEmail(user.getEmail(), "Verification", messageContent);
-            log.trace("Hashcode for user " + user.getUsername() + " has been sent on email " + user.getEmail());
-            HttpSession session = req.getSession();
-            session.setAttribute("user_temp", user);
-            getServletContext().getRequestDispatcher(VERIFICATION_PAGE_PATH).forward(req, resp);
-        } catch (MessagingException e) {
-            e.printStackTrace();
+
+        boolean usernameIsBusy = (dao.findByUsername(user.getUsername()) != null);
+        boolean emailIsBusy = (dao.findByEmail(user.getEmail()) != null);
+
+        if (!usernameIsBusy && !emailIsBusy) {
+            try {
+                String messageContent =
+                        "<div style=\"font-family: -apple-system,BlinkMacSystemFont," +
+                                "'Segoe UI',Roboto,'Helvetica Neue',Arial,'Noto Sans',sans-serif,'Apple Color Emoji'," +
+                                "'Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';\"><p style=\"background-color: #0069d9;" +
+                                "color:#fff; text-align: center;\">yourNotes</p><hr style=\"color:#0069d9;\">" +
+                                "<p>Hello " + user.getFirstName() + "!</p><br>" +
+                                "<p>Your verification code is " + user.hashCode() + "</p><hr style=\"color:#0069d9;\">" +
+                                "<p>Please, do not reply on this message</p></div>";
+
+                EmailSender.sendEmail(user.getEmail(), "Verification", messageContent);
+                log.trace("Hashcode for user " + user.getUsername() + " has been sent on email " + user.getEmail());
+
+                session.setAttribute("user_temp", user);
+                session.removeAttribute("sign_up_failed");
+                session.removeAttribute("username_is_busy");
+                session.removeAttribute("email_is_busy");
+                getServletContext().getRequestDispatcher(VERIFICATION_PAGE_PATH).forward(req, resp);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        } else {
+            session.setAttribute("sign_up_failed", true);
+            session.setAttribute("username_is_busy", false);
+            session.setAttribute("email_is_busy", false);
+            if (usernameIsBusy)
+                session.setAttribute("username_is_busy", true);
+            if (emailIsBusy)
+                session.setAttribute("email_is_busy", true);
+            getServletContext().getRequestDispatcher(SIGN_UP_PAGE_PATH).forward(req, resp);
         }
+
 
     }
 

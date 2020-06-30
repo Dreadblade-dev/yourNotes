@@ -42,8 +42,9 @@
                 </ul>
             </div>
         </nav>
-        <main role="main" class="container-fluid">
+        <main role="main" class="container-fluid justify-content-center">
             <h2>Account information:</h2>
+
             <%
                 User user = (User) session.getAttribute("current_user");
 
@@ -54,58 +55,107 @@
                 out.println("<li>Email: " + user.getEmail() + "</li>");
                 out.println("</ul>");
             %>
-            <div class="justify-content-center">
-                <form action="/settings?action=change-username" method="post" class="form-change">
-                    <h1 class="h3 mb-3 font-weight-normal">Change username:</h1>
-                    <label for="new_username" class="sr-only">New username</label>
-                    <input id="new_username" class="form-control" type="text" placeholder="New username" name="new_username" required>
 
-                    <label for="change_username_password" class="sr-only">Password</label>
-                    <input id="change_username_password" class="form-control" type="password" placeholder="Password" name="password" required>
+            <div>
+                <form id="changeUsernameForm" action="/settings?action=change-username" method="post" class="form-change">
+                    <h1 class="h3 mb-3 font-weight-normal">Change username:</h1>
+                    <label for="newUsername" class="sr-only">New username</label>
+                    <input id="newUsername" class="form-control" type="text" placeholder="New username" name="new_username" required>
+
+                    <label for="changeUsernamePassword" class="sr-only">Password</label>
+                    <input id="changeUsernamePassword" class="form-control" type="password" placeholder="Password" name="password" required>
+
+                    <p id="changeUsernameInvalidPassword" class="text-danger" style="display: none;">Invalid password</p>
 
                     <button value="submit" class="btn btn-lg btn-primary btn-block">Change username</button>
                 </form>
             </div>
-            <div class="justify-content-center">
-                <form action="/settings?action=change-email" method="post" class="form-change">
+
+            <div>
+                <form id="changeEmailForm" action="/settings?action=change-email" method="post" class="form-change">
                     <h1 class="h3 mb-3 font-weight-normal">Change email:</h1>
 
-                    <label for="new_email" class="sr-only">New email</label>
-                    <input id="new_email" class="form-control" type="text" placeholder="New email" name="new_email" required>
+                    <label for="newEmail" class="sr-only">New email</label>
+                    <input id="newEmail" class="form-control" type="text" placeholder="New email" name="new_email" required>
 
-                    <label for="change_email_password" class="sr-only">Password</label>
-                    <input id="change_email_password" class="form-control" type="password" placeholder="Password" name="password" required>
+                    <label for="changeEmailPassword" class="sr-only">Password</label>
+                    <input id="changeEmailPassword" class="form-control" type="password" placeholder="Password" name="password" required>
+
+                    <p id="changeEmailInvalidPassword" class="text-danger" style="display: none;">Invalid password</p>
 
                     <button value="submit" class="btn btn-lg btn-primary btn-block">Change email</button>
                 </form>
             </div>
-            <div class="justify-content-center">
-                <form action="/settings?action=change-password" method="post" class="form-change">
+
+            <div>
+                <form id="changePasswordForm" onsubmit="changePasswordMismatch(); return false;"
+                      action="/settings?action=change-password" method="post" class="form-change">
+
                     <h1 class="h3 mb-3 font-weight-normal">Change password:</h1>
-                    <label for="new_password" class="sr-only">New password</label>
-                    <input id="new_password" class="form-control" type="password" placeholder="New password" name="new_password" required>
 
-                    <label for="repeat_new_password" class="sr-only">Repeat new password</label>
-                    <input id="repeat_new_password" class="form-control" type="password" placeholder="Repeat new password" name="repeat_new_password" required>
+                    <label for="newPassword" class="sr-only">New password</label>
+                    <input id="newPassword" class="form-control" type="password" placeholder="New password" name="new_password" required minlength="8">
 
-                    <label for="change_password_password" class="sr-only">Password</label>
-                    <input id="change_password_password" class="form-control" type="password" placeholder="Password" name="password" required>
+                    <label for="repeatNewPassword" class="sr-only">Repeat new password</label>
+                    <input id="repeatNewPassword" class="form-control" type="password" placeholder="Repeat new password" name="repeat_new_password" required>
+                    
+                    <label for="changePasswordPassword" class="sr-only">Password</label>
+                    <input id="changePasswordPassword" class="form-control" type="password" placeholder="Password" name="password" required>
+                    
+                    <p id="changePasswordPasswordMismatch" class="text-danger" style="display: none;">Password mismatch</p>
+                    <p id="changePasswordInvalidPassword" class="text-danger" style="display: none;">Invalid password</p>
 
                     <button value="submit" class="btn btn-lg btn-primary btn-block">Change password</button>
                 </form>
             </div>
-            <div class="justify-content-center">
-                <form action="/settings?action=delete-account" method="post" class="form-change">
-                    <h1 class="h3 mb-3 font-weight-normal">Delete account:</h1>
-                    <label for="delete_account_password" class="sr-only">Password</label>
-                    <input id="delete_account_password" class="form-control" type="password" placeholder="Password" name="password" required>
 
-                    <label for="delete_account_repeat_password" class="sr-only">Repeat password</label>
-                    <input id="delete_account_repeat_password" class="form-control" type="password" placeholder="Repeat password" name="repeat_password" required>
+            <div>
+                <form id="deleteAccountForm" onsubmit="deleteAccountPasswordMismatch(); return false;"
+                      action="/settings?action=delete-account" method="post" class="form-change">
+                    
+                    <h1 class="h3 mb-3 font-weight-normal">Delete account:</h1>
+
+                    <label for="deleteAccountPassword" class="sr-only">Password</label>
+                    <input id="deleteAccountPassword" class="form-control" type="password" placeholder="Password" name="password" required>
+
+                    <label for="deleteAccountRepeatPassword" class="sr-only">Repeat password</label>
+                    <input id="deleteAccountRepeatPassword" class="form-control" type="password" placeholder="Repeat password" name="repeat_password" required>
+
+                    <p id="deleteAccountPasswordMismatch" class="text-danger" style="display: none;">Password mismatch</p>
+                    <p id="deleteAccountInvalidPassword" class="text-danger" style="display: none;">Invalid password</p>
 
                     <button value="submit" class="btn btn-lg btn-primary btn-block">Delete account</button>
                 </form>
             </div>
+
         </main>
+        <script src="/scripts/settings.js" type="text/javascript"></script>
+        <%
+            if (session.getAttribute("account_action_failed") != null) {
+                boolean accountActionFailed = (Boolean) session.getAttribute("account_action_failed");
+                if (accountActionFailed) {
+                    boolean changeUsernamePasswordInvalid = (Boolean) session.getAttribute("change_username_password_invalid");
+                    boolean changeEmailPasswordInvalid = (Boolean) session.getAttribute("change_email_password_invalid");
+                    boolean changePasswordInvalid = (Boolean) session.getAttribute("change_password_invalid");
+                    boolean deleteAccountPasswordInvalid = (Boolean) session.getAttribute("delete_account_password_invalid");
+
+                    if (changeUsernamePasswordInvalid) {
+                        out.println("<script>changeUsernameInvalidPassword();</script>");
+                    }
+
+                    if (changeEmailPasswordInvalid) {
+                        out.println("<script>changeEmailInvalidPassword();</script>");
+                    }
+
+                    if (changePasswordInvalid) {
+                        out.println("<script>changePasswordInvalidPassword();</script>");
+                    }
+
+                    if (deleteAccountPasswordInvalid) {
+                        out.println("<script>deleteAccountInvalidPassword();</script>");
+                    }
+                }
+            }
+        %>
     </body>
 </html>

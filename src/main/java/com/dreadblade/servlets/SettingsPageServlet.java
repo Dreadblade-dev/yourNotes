@@ -37,11 +37,20 @@ public class SettingsPageServlet extends HttpServlet {
             context.getRequestDispatcher(INDEX_PAGE_PATH).forward(req, resp);
         }
 
+        session.setAttribute("account_action_failed", false);
+        session.setAttribute("change_username_password_invalid", false);
+        session.setAttribute("change_email_password_invalid", false);
+        session.setAttribute("change_password_invalid", false);
+        session.setAttribute("delete_account_password_invalid", false);
+
         /**
          * Get attribute from Settings Filter
          */
-        if ((Boolean) req.getAttribute("password_correct")) {
-            if (action.equals("change-username")) {
+
+        boolean passwordIsCorrect = (Boolean) req.getAttribute("password_correct");
+
+        if (action.equals("change-username")) {
+            if (passwordIsCorrect) {
                 log.trace("Trying to change username...");
                 String oldUsername = user.getUsername();
                 user = dao.updateById(user.getId(), req.getParameter("new_username"), user.getFirstName(),
@@ -52,9 +61,15 @@ public class SettingsPageServlet extends HttpServlet {
                 log.trace("User \"" + oldUsername + "\" changed his username to \"" +
                         user.getUsername() + "\"");
                 context.getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
+            } else {
+                session.setAttribute("account_action_failed", true);
+                session.setAttribute("change_username_password_invalid", true);
+                getServletContext().getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
             }
+        }
 
-            if (action.equals("change-email")) {
+        if (action.equals("change-email")) {
+            if (passwordIsCorrect) {
                 log.trace("Trying to change email...");
                 user = dao.updateById(user.getId(), user.getUsername(), user.getFirstName(),
                         user.getLastName(), req.getParameter("new_email"), user.getPassword());
@@ -64,9 +79,15 @@ public class SettingsPageServlet extends HttpServlet {
                 log.trace("User \"" + user.getUsername() + "\" changed his email to \"" +
                         user.getEmail() + "\"");
                 context.getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
+            } else {
+                session.setAttribute("account_action_failed", true);
+                session.setAttribute("change_email_password_invalid", true);
+                getServletContext().getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
             }
+        }
 
-            if (action.equals("change-password")) {
+        if (action.equals("change-password")) {
+            if (passwordIsCorrect) {
                 log.trace("Trying to change password...");
                 user = dao.updateById(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
                         user.getEmail(), req.getParameter("new_password"));
@@ -76,9 +97,16 @@ public class SettingsPageServlet extends HttpServlet {
                 log.trace("User \"" + user.getUsername() + "\" changed his password to \"" +
                         user.getPassword() + "\"");
                 context.getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
+            } else {
+                session.setAttribute("account_action_failed", true);
+                session.setAttribute("change_password_invalid", true);
+                getServletContext().getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
             }
 
-            if (action.equals("delete-account")) {
+        }
+
+        if (action.equals("delete-account")) {
+            if (passwordIsCorrect) {
                 log.trace("Trying to delete account...");
 
                 NoteDao noteDao = DaoFactory.getInstance().getNoteDao();
@@ -90,6 +118,10 @@ public class SettingsPageServlet extends HttpServlet {
                         " his account");
                 session.setAttribute("current_user", null);
                 context.getRequestDispatcher(INDEX_PAGE_PATH).forward(req, resp);
+            } else {
+                session.setAttribute("account_action_failed", true);
+                session.setAttribute("delete_account_password_invalid", true);
+                getServletContext().getRequestDispatcher(SETTINGS_PAGE_PATH).forward(req, resp);
             }
         }
     }
