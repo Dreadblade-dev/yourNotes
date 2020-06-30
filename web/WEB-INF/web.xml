@@ -32,6 +32,15 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>VerificationServlet</servlet-name>
+        <servlet-class>com.dreadblade.servlets.VerificationServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>VerificationServlet</servlet-name>
+        <url-pattern>/verification</url-pattern>
+    </servlet-mapping>
+    
+    <servlet>
         <servlet-name>MainMenuPageServlet</servlet-name>
         <servlet-class>com.dreadblade.servlets.MainMenuPageServlet</servlet-class>
     </servlet>
