@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.dreadblade.entity.User" %>
-<%@ page import="java.io.IOException" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: Dreadblade-
   Date: 16-Jun-20
@@ -62,6 +62,8 @@
                     <label for="newUsername" class="sr-only">New username</label>
                     <input id="newUsername" class="form-control" type="text" placeholder="New username" name="new_username" required>
 
+                    <p id="changeUsernameIsBusy" class="text-danger" style="display: none;">Username is busy</p>
+
                     <label for="changeUsernamePassword" class="sr-only">Password</label>
                     <input id="changeUsernamePassword" class="form-control" type="password" placeholder="Password" name="password" required>
 
@@ -77,6 +79,8 @@
 
                     <label for="newEmail" class="sr-only">New email</label>
                     <input id="newEmail" class="form-control" type="text" placeholder="New email" name="new_email" required>
+
+                    <p id="changeEmailIsBusy" class="text-danger" style="display: none;">Email is busy</p>
 
                     <label for="changeEmailPassword" class="sr-only">Password</label>
                     <input id="changeEmailPassword" class="form-control" type="password" placeholder="Password" name="password" required>
@@ -97,10 +101,10 @@
                     <input id="newPassword" class="form-control" type="password" placeholder="New password" name="new_password" required minlength="8">
 
                     <label for="repeatNewPassword" class="sr-only">Repeat new password</label>
-                    <input id="repeatNewPassword" class="form-control" type="password" placeholder="Repeat new password" name="repeat_new_password" required>
+                    <input id="repeatNewPassword" class="form-control" type="password" placeholder="Repeat new password" name="repeat_new_password" required minlength="8">
                     
                     <label for="changePasswordPassword" class="sr-only">Password</label>
-                    <input id="changePasswordPassword" class="form-control" type="password" placeholder="Password" name="password" required>
+                    <input id="changePasswordPassword" class="form-control" type="password" placeholder="Password" name="password" required minlength="8">
                     
                     <p id="changePasswordPasswordMismatch" class="text-danger" style="display: none;">Password mismatch</p>
                     <p id="changePasswordInvalidPassword" class="text-danger" style="display: none;">Invalid password</p>
@@ -134,13 +138,23 @@
             if (session.getAttribute("account_action_failed") != null) {
                 boolean accountActionFailed = (Boolean) session.getAttribute("account_action_failed");
                 if (accountActionFailed) {
+                    boolean changeUsernameIsBusy = (Boolean) session.getAttribute("change_username_is_busy");
                     boolean changeUsernamePasswordInvalid = (Boolean) session.getAttribute("change_username_password_invalid");
+                    boolean changeEmailIsBusy = (Boolean) session.getAttribute("change_email_is_busy");
                     boolean changeEmailPasswordInvalid = (Boolean) session.getAttribute("change_email_password_invalid");
                     boolean changePasswordInvalid = (Boolean) session.getAttribute("change_password_invalid");
                     boolean deleteAccountPasswordInvalid = (Boolean) session.getAttribute("delete_account_password_invalid");
 
+                    if (changeUsernameIsBusy) {
+                        out.println("<script>changeUsernameIsBusy();</script>");
+                    }
+
                     if (changeUsernamePasswordInvalid) {
                         out.println("<script>changeUsernameInvalidPassword();</script>");
+                    }
+
+                    if (changeEmailIsBusy) {
+                        out.println("<script>changeEmailIsBusy();</script>");
                     }
 
                     if (changeEmailPasswordInvalid) {

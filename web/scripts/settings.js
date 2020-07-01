@@ -1,7 +1,17 @@
 let count = 20.5;
 
+function changeUsernameIsBusy() {
+    document.getElementById("changeUsernameIsBusy").style.display = "block";
+    document.querySelector("main").style.marginTop = count + 3.5 + "rem";
+}
+
 function changeUsernameInvalidPassword() {
     document.getElementById("changeUsernameInvalidPassword").style.display = "inline-block";
+    document.querySelector("main").style.marginTop = count + 3.5 + "rem";
+}
+
+function changeEmailIsBusy() {
+    document.getElementById("changeEmailIsBusy").style.display = "block";
     document.querySelector("main").style.marginTop = count + 3.5 + "rem";
 }
 

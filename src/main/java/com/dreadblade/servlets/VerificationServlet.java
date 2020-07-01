@@ -15,16 +15,17 @@ import java.io.IOException;
 
 @WebServlet(name = "VerificationServlet")
 public class VerificationServlet extends HttpServlet {
+    private static final String VERIFICATION_PAGE_PATH = "/WEB-INF/view/verification_page.jsp";
     private static final Logger log = Logger.getLogger(SignUpPageServlet.class.getName());
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         User user = (User) session.getAttribute("user_temp");
-        session.removeAttribute("user_temp");
         int hash = user.hashCode();
         int enteredHash = Integer.parseInt(req.getParameter("verification_code"));
         if (hash == enteredHash) {
+            session.removeAttribute("user_temp");
             DaoFactory daoFactory = DaoFactory.getInstance();
             UserDao userDao = daoFactory.getUserDao();
             user = userDao.create(user.getUsername(), user.getFirstName(), user.getLastName(), user.getEmail(),
@@ -33,6 +34,10 @@ public class VerificationServlet extends HttpServlet {
             session.setAttribute("current_user", user);
             log.trace("User \"" + user.getUsername() + "\" and id \"" + user.getId() + "\" signed up");
             getServletContext().getRequestDispatcher("/menu").forward(req, resp);
+        } else {
+            log.trace("User \"" + user.getUsername() + "\" entered invalid verification code");
+            session.setAttribute("verification_failed", true);
+            getServletContext().getRequestDispatcher(VERIFICATION_PAGE_PATH).forward(req, resp);
         }
     }
 }

@@ -51,12 +51,15 @@ public class SignUpPageServlet extends HttpServlet {
                                 "<p>Please, do not reply on this message</p></div>";
 
                 EmailSender.sendEmail(user.getEmail(), "Verification", messageContent);
-                log.trace("Hashcode for user " + user.getUsername() + " has been sent on email " + user.getEmail());
+                log.trace("Verification code for user " + user.getUsername() + " has been sent on email " + user.getEmail());
 
                 session.setAttribute("user_temp", user);
                 session.removeAttribute("sign_up_failed");
                 session.removeAttribute("username_is_busy");
                 session.removeAttribute("email_is_busy");
+                session.removeAttribute("sign_in_failed");
+                session.removeAttribute("invalid_username");
+                session.removeAttribute("invalid_password");
                 getServletContext().getRequestDispatcher(VERIFICATION_PAGE_PATH).forward(req, resp);
             } catch (MessagingException e) {
                 e.printStackTrace();
