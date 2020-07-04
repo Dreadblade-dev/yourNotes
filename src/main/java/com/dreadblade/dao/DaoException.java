@@ -1,7 +1,5 @@
 package com.dreadblade.dao;
 
-import java.sql.SQLException;
-
 /**
  * Exceptions for DAO
  */
