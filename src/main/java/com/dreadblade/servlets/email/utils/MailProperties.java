@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Loads properties from the mail.properties file and provides access to them
+ */
 public class MailProperties {
     private static Logger logger = Logger.getLogger(MailProperties.class.getName());
     private static final String PROPERTIES_FILE = "mail.properties";

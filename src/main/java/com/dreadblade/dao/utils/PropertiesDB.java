@@ -6,6 +6,9 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Loads properties from the db.properties file and provides access to them
+ */
 public class PropertiesDB {
     private static Logger logger = Logger.getLogger(PropertiesDB.class.getName());
     private static final String PROPERTIES_FILE = "db.properties";

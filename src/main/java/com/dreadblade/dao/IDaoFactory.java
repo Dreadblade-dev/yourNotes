@@ -1,9 +1,8 @@
 package com.dreadblade.dao;
 
 /**
- * Интерфейс DaoFactory.
+ * DaoFactory interface should contain only declarations of getEntityDao methods
  */
-
 public interface IDaoFactory {
     UserDao getUserDao();
     NoteDao getNoteDao();

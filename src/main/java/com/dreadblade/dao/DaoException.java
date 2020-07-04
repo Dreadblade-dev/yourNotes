@@ -3,7 +3,7 @@ package com.dreadblade.dao;
 import java.sql.SQLException;
 
 /**
- * Свой тип ошибок для DAO
+ * Exceptions for DAO
  */
 public class DaoException extends RuntimeException {
 

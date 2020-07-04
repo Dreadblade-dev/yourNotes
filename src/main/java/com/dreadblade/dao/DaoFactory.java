@@ -9,9 +9,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 /**
- * Нужен, чтобы получить доступ к конкретному Dao объекту
+ * Needed to access a specific Dao object
  */
-
 public class DaoFactory implements IDaoFactory {
     private static final String PROPERTY_URL = "url";
     private static final String PROPERTY_USERNAME = "username";

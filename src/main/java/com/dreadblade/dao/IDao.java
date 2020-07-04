@@ -3,8 +3,8 @@ package com.dreadblade.dao;
 import com.dreadblade.entity.BaseDaoEntity;
 
 /**
- * Интерфейс DAO с общими методами
- * Опционально интерфейс конкретного DAO может реализовывать его (если методы подходят)
+ * DAO interface with common methods
+ * Optionally, the interface of a specific DAO can implement it
  */
 public interface IDao<T extends BaseDaoEntity> {
     T findById(int id) throws DaoException;

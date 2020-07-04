@@ -6,11 +6,9 @@ import com.dreadblade.entity.User;
 import java.util.List;
 
 /**
- * Интерфейсы DAO объектов, объявлять только методы find()
- * Остальные можно получить, добавив наследование от
- * интерфейса IDao
+ * Interface of DAO objects, declare only methods specific for Note
+ * The rest methods can be obtained by extending IDao interface
  */
-
 public interface NoteDao extends IDao<Note> {
     Note create(User owner, String title, String content);
     List<Note> findAllByUser(User user);

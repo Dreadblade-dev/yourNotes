@@ -5,10 +5,9 @@ import com.dreadblade.entity.User;
 import java.util.List;
 
 /**
- * Интерфейсы DAO объектов, объявлять только методы, специфичные для User
- * Остальные можно получить, добавив наследование от интерфейса IDao
+ * Interface of DAO objects, declare only methods specific for User
+ * The rest methods can be obtained by extending IDao interface
  */
-
 public interface UserDao extends IDao<User> {
     User create(String user_name, String first_name, String last_name, String email, String password) throws DaoException;
     User findByUsername(String user_name) throws DaoException;
